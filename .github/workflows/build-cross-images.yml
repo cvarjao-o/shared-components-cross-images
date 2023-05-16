@@ -72,6 +72,10 @@ jobs:
           push: false
           no-cache: true
           platforms: linux/arm64
+          build-args: |
+              ANDROID_NDK=${{ env.ANDROID_NDK }}
+              ANDROID_SDK=${{ env.ANDROID_SDK }}
+              ANDROID_VERSION=${{ env.ANDROID_VERSION }}
           tags: ghcr.io/${{ github.repository }}/cross-${{matrix.target}}:latest
 #          labels: ${{ steps.meta.outputs.labels }}
 #      - name: Build and Push Docker image
