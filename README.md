@@ -14,7 +14,7 @@ By default, cross uses the following android related variables for building the 
 - Android SDK Level: `28`
 - Android Version: `9.0.0_r1`
 
-The versions are too low for most deployments, and therefore this images builds the images configured with the following variables:
+The versions are too high for most deployments, and therefore this images builds the images configured with the following variables:
 
 - Android NDK Version: `r13b`
 - Android SDK Level: `21`
