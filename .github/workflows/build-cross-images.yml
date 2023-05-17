@@ -32,11 +32,11 @@ jobs:
           repository: cross-rs/cross
       - run: df -h
 
-#      - name: Install Rust toolchain
-#        uses: dtolnay/rust-toolchain@master
-#        with:
-#          toolchain: ${{ env.RUST_VERSION }}
-#      - run: df -h
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+      - run: df -h
 
       - uses: Swatinem/rust-cache@v2.2.0
       - run: df -h
