@@ -61,6 +61,7 @@ jobs:
       coverage-artifact: ${{ steps.cov.outputs.artifact-name }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           repository: cross-rs/cross
 
@@ -72,11 +73,13 @@ jobs:
 
       - name: Build xtask
         run: cargo build -p xtask
+        working-directory: cross
 
       - name: Prepare Meta
         id: prepare-meta
         timeout-minutes: 60
         run: cargo xtask ci-job prepare-meta "${TARGET}${SUB:+.$SUB}"
+        working-directory: cross
         env:
           TARGET: ${{ matrix.target }}
           SUB: ${{ matrix.sub }}
@@ -85,6 +88,7 @@ jobs:
       - name: Install cross
         if: matrix.deploy
         run: cargo install --path . --force --debug
+        working-directory: cross
 
       - name: Docker Meta
         if: steps.prepare-meta.outputs.has-image
@@ -104,6 +108,7 @@ jobs:
           --build-arg "ANDROID_NDK=${{ env.ANDROID_NDK }}"
           --build-arg "ANDROID_SDK=${{ env.ANDROID_SDK }}"
           --build-arg "ANDROID_VERSION=${{ env.ANDROID_VERSION }}"
+        working-directory: cross
         env:
           TARGET: ${{ matrix.target }}
           SUB: ${{ matrix.sub }}
@@ -116,6 +121,7 @@ jobs:
         run: |
           TARGET_VAR="cross_target_${TARGET//-/_}_image"
           echo "${TARGET_VAR^^}=${IMAGE}" | tee -a "${GITHUB_ENV}"
+        working-directory: cross
         env:
           TARGET: ${{ matrix.target }}
           IMAGE: ${{ steps.build-docker-image.outputs.image }}
@@ -125,6 +131,7 @@ jobs:
         continue-on-error: true
         if: steps.prepare-meta.outputs.has-image && steps.prepare-meta.outputs.test-variant == 'default'
         run: ./ci/test.sh
+        working-directory: cross
         env:
           TARGET: ${{ matrix.target }}
           CPP: ${{ matrix.cpp }}
@@ -139,12 +146,14 @@ jobs:
         continue-on-error: true
         if: steps.prepare-meta.outputs.has-image && steps.prepare-meta.outputs.test-variant == 'zig'
         run: ./ci/test-zig-image.sh
+        working-directory: cross
         shell: bash
 
       - name: Test Cross Image
         continue-on-error: true
         if: steps.prepare-meta.outputs.has-image && steps.prepare-meta.outputs.test-variant == 'cross'
         run: ./ci/test-cross-image.sh
+        working-directory: cross
         env:
           TARGET: 'aarch64-unknown-linux-gnu'
           IMAGE: 'ghcr.io/cross-rs/aarch64-unknown-linux-gnu:main'
@@ -157,6 +166,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Push image to GitHub Container Registry
         if: >
           steps.prepare-meta.outputs.has-image && (
@@ -168,6 +178,7 @@ jobs:
           --build-arg "ANDROID_NDK=${{ env.ANDROID_NDK }}"
           --build-arg "ANDROID_SDK=${{ env.ANDROID_SDK }}"
           --build-arg "ANDROID_VERSION=${{ env.ANDROID_VERSION }}"
+        working-directory: cross
         env:
           TARGET: ${{ matrix.target }}
           SUB: ${{ matrix.sub }}
