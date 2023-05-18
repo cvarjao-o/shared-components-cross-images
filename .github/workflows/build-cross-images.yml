@@ -249,7 +249,7 @@ jobs:
           --build-arg "ANDROID_SDK=${{ env.ANDROID_SDK }}"
           --build-arg "ANDROID_VERSION=${{ env.ANDROID_VERSION }}"
         env:
-          TARGET: cross-${{ matrix.target }}
+          TARGET: ${{ matrix.target }}
           SUB: ${{ matrix.sub }}
           LABELS: ${{ steps.docker-meta.outputs.labels }}
           LATEST: ${{ needs.check.outputs.is-latest || 'false' }}
