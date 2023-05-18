@@ -3,7 +3,7 @@ description: Setup Rust with specified toolchain, target and components.
 inputs:
   toolchain:
     description: 'Toolchain'
-    default: stable
+    default: '1.67.0'
     required: true
   target:
     description: 'Target'
