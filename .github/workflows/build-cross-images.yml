@@ -86,11 +86,6 @@ jobs:
           SUB: ${{ matrix.sub }}
         shell: bash
 
-      - name: Install cross
-        if: matrix.deploy
-        run: cargo install --path . --force --debug
-        working-directory: cross
-
       - name: Docker Meta
         if: steps.prepare-meta.outputs.has-image
         id: docker-meta
